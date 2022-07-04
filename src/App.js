@@ -1,18 +1,17 @@
-import { Route, Switch } from 'react-router-dom';
-import './App.css';
-import Admin from './components/Admin/Admin'
-import Medicines from './containers/Medicines/Medicines'
-import Patient from './containers/Patient/Patient'
+import { Route, Switch } from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import Medicines from "./containers/Medicines/Medicines";
+import Patients from "./containers/Patients/Patients";
 
 function App() {
   return (
     <>
-      <Admin>
+      <Layout>
         <Switch>
           <Route path={"/medicines"} exact component={Medicines} />
-          <Route path={"/patient"} exact component={Patient} />
+          <Route path={"/patients"} exact component={Patients} />
         </Switch>
-      </Admin>
+      </Layout>
     </>
   );
 }
