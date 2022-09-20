@@ -7,34 +7,34 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 
-function Medicines(props) {
+function Doctors(props) {
 
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
-        setOpen(true);
+      setOpen(true);
     };
-
+  
     const handleClose = () => {
-        setOpen(false);
+      setOpen(false);
     };
 
     return (
         <div>
-            <h1>Add Medicines</h1>
+            <h1>Doctors</h1>
             <div>
-                <Button variant="outlined" onClick={handleClickOpen} startIcon={<AddIcon />}>
-                ADD MEDICINES
+                <Button variant="outlined" startIcon={<AddIcon/>} onClick={handleClickOpen}>
+                    ADD DOCTOR DETAILS
                 </Button>
                 <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>ADD MEDICINES</DialogTitle>
+                    <DialogTitle>ADD DOCTOR DETAILS</DialogTitle>
                     <DialogContent>
                         <TextField
                             autoFocus
                             margin="dense"
                             id="name"
                             name='name'
-                            label="Medicines Name"
+                            label="Doctor Name"
                             type="text"
                             fullWidth
                             variant="standard"
@@ -42,9 +42,9 @@ function Medicines(props) {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="quantity"
-                            name='quantity'
-                            label="Quantity"
+                            id="age"
+                            name='age'
+                            label="Age"
                             type="text"
                             fullWidth
                             variant="standard"
@@ -52,19 +52,9 @@ function Medicines(props) {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="price"
-                            name='price'
-                            label="Price"
-                            type="text"
-                            fullWidth
-                            variant="standard"
-                        />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="expiry"
-                            name='expiry'
-                            label="Expiry"
+                            id="experience"
+                            name='experience'
+                            label="Experience"
                             type="text"
                             fullWidth
                             variant="standard"
@@ -77,8 +67,7 @@ function Medicines(props) {
                 </Dialog>
             </div>
         </div>
-
     );
 }
 
-export default Medicines;
+export default Doctors;
