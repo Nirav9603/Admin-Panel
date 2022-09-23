@@ -8,11 +8,24 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import * as yup from 'yup';
 import { useFormik, Form, Formik } from 'formik';
+import { DataGrid } from '@mui/x-data-grid';
 
 function Doctors(props) {
 
     const [open, setOpen] = React.useState(false);
+    const [data, setData] = React.useState([]);
 
+    React.useEffect(
+        ()=>{
+            getData()
+        },[]
+    );
+
+    const getData = () => {
+        let localData = JSON.parse(localStorage.getItem("Doctors"))
+        setData(localData)
+    }
+ 
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -22,18 +35,16 @@ function Doctors(props) {
     };
 
     const handleAdd = (values) => {
-        
+
         let localData = JSON.parse(localStorage.getItem("Doctors"));
 
-        let id = Math.floor(Math.random()*100000);
+        let id = Math.floor(Math.random() * 100000);
 
-        let data = {id: id,...values};
+        let data = { id: id, ...values };
 
-        
-
-        if(localData === null){
-            localStorage.setItem("Doctors", JSON.stringify([ data ]));
-        }else{
+        if (localData === null) {
+            localStorage.setItem("Doctors", JSON.stringify([data]));
+        } else {
             localData.push(data)
             localStorage.setItem("Doctors", JSON.stringify(localData));
         }
@@ -65,6 +76,13 @@ function Doctors(props) {
 
     const { handleBlur, handleChange, errors, touched, handleSubmit } = formikObj;
 
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'name', headerName: 'Name', width: 130 },
+        { field: 'age', headerName: 'Age', width: 130 },
+        { field: 'experience', headerName: 'Experience', width: 130 }
+            
+    ];
 
     return (
         <div>
@@ -73,6 +91,19 @@ function Doctors(props) {
                 <Button variant="outlined" startIcon={<AddIcon />} onClick={handleClickOpen}>
                     ADD DOCTOR DETAILS
                 </Button>
+
+                <br/><br/>
+
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={data}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                    />
+                </div>
+
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>ADD DOCTOR DETAILS</DialogTitle>
                     <Formik values={formikObj}>
@@ -89,7 +120,7 @@ function Doctors(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.name && touched.name ? errors.name : ''}</p>
+                                <p>{errors.name && touched.name ? errors.name : ''}</p>
                                 <TextField
                                     margin="dense"
                                     id="age"
@@ -101,7 +132,7 @@ function Doctors(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.age && touched.age ? errors.age : ''}</p>
+                                <p>{errors.age && touched.age ? errors.age : ''}</p>
                                 <TextField
                                     margin="dense"
                                     id="experience"
@@ -113,7 +144,7 @@ function Doctors(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.experience && touched.experience ? errors.experience : ''}</p>
+                                <p>{errors.experience && touched.experience ? errors.experience : ''}</p>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose}>Cancel</Button>

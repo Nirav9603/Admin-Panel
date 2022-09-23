@@ -8,11 +8,33 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import * as yup from 'yup';
 import { useFormik, Form, Formik } from 'formik';
+import { DataGrid } from '@mui/x-data-grid';
+
+const columns = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Name', width: 130 },
+    { field: 'quantity', headerName: 'Quantity', width: 130 },
+    { field: 'price', headerName: 'Price', width: 130 },
+    { field: 'expiry', headerName: 'Expiry', width: 130 }
+
+];
 
 
 function Medicines(props) {
 
     const [open, setOpen] = React.useState(false);
+    const [data, setData] = React.useState([]);
+
+    React.useEffect(
+        ()=>{
+            getData()
+        },[]
+    )
+
+    const getData = () => {
+        let localData = JSON.parse(localStorage.getItem("Medicines"))
+        setData(localData)
+    }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -26,15 +48,15 @@ function Medicines(props) {
 
         let localData = JSON.parse(localStorage.getItem("Medicines"));
 
-        let id = Math.floor(Math.random()*100000)
+        let id = Math.floor(Math.random() * 100000)
 
-        let data = {id : id,... values};
+        let data = { id: id, ...values };
 
-        if(localData === null){
-            localStorage.setItem("Medicines", JSON.stringify ([data]));
-        }else{
+        if (localData === null) {
+            localStorage.setItem("Medicines", JSON.stringify([data]));
+        } else {
             localData.push(data)
-            localStorage.setItem("Medicines", JSON.stringify (localData));
+            localStorage.setItem("Medicines", JSON.stringify(localData));
         }
 
         setOpen(false);
@@ -70,6 +92,19 @@ function Medicines(props) {
                 <Button variant="outlined" onClick={handleClickOpen} startIcon={<AddIcon />}>
                     ADD MEDICINES
                 </Button>
+
+                <br/><br/>
+
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={data}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                    />
+                </div>
+
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>ADD MEDICINES</DialogTitle>
                     <Formik values={formikObj}>
@@ -86,7 +121,7 @@ function Medicines(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.name && touched.name ? errors.name : ''}</p>
+                                <p>{errors.name && touched.name ? errors.name : ''}</p>
                                 <TextField
                                     margin="dense"
                                     id="quantity"
@@ -98,7 +133,7 @@ function Medicines(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.quantity && touched.quantity ? errors.quantity : ''}</p>
+                                <p>{errors.quantity && touched.quantity ? errors.quantity : ''}</p>
                                 <TextField
                                     margin="dense"
                                     id="price"
@@ -110,7 +145,7 @@ function Medicines(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.price && touched.price ? errors.price : ''}</p>
+                                <p>{errors.price && touched.price ? errors.price : ''}</p>
                                 <TextField
                                     margin="dense"
                                     id="expiry"
@@ -122,7 +157,7 @@ function Medicines(props) {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
-                                <p>{ errors.expiry && touched.expiry ? errors.expiry : ''}</p>
+                                <p>{errors.expiry && touched.expiry ? errors.expiry : ''}</p>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose}>Cancel</Button>
