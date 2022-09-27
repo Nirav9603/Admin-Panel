@@ -9,26 +9,59 @@ import AddIcon from '@mui/icons-material/Add';
 import * as yup from 'yup';
 import { useFormik, Form, Formik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
-
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'quantity', headerName: 'Quantity', width: 130 },
-    { field: 'price', headerName: 'Price', width: 130 },
-    { field: 'expiry', headerName: 'Expiry', width: 130 }
-
-];
-
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Medicines(props) {
 
     const [open, setOpen] = React.useState(false);
+    const [dOpen, setdOpen] = React.useState(false);
     const [data, setData] = React.useState([]);
+    const [did, setDid] = React.useState([]);
+
+    const handleDelete = (data) => {
+        setdOpen(true)
+        setDid(data.id)
+    }
+
+    const handleDeletData = () => {
+        console.log(did);
+
+        let localData = JSON.parse(localStorage.getItem("Medicines"))
+
+        let Ddata = localData.filter((l) => l.id !== did)
+
+        localStorage.setItem("Medicines", JSON.stringify(Ddata))
+
+        setData(Ddata)
+
+        setdOpen(false)
+        console.log(Ddata);
+    }
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'name', headerName: 'Name', width: 130 },
+        { field: 'quantity', headerName: 'Quantity', width: 130 },
+        { field: 'price', headerName: 'Price', width: 130 },
+        { field: 'expiry', headerName: 'Expiry', width: 130 },
+        {
+            field: '',
+            headerName: 'Expiry',
+            width: 130,
+            renderCell: (params) => (
+                <IconButton aria-label="delete" onClick={() => handleDelete(params.row)}>
+                    <DeleteIcon />
+                </IconButton>
+            )
+        }
+
+    ];
 
     React.useEffect(
-        ()=>{
+        () => {
             getData()
-        },[]
+        }, []
     )
 
     const getData = () => {
@@ -42,6 +75,7 @@ function Medicines(props) {
 
     const handleClose = () => {
         setOpen(false);
+        setdOpen(false)
     };
 
     const handleAdd = (values) => {
@@ -93,7 +127,7 @@ function Medicines(props) {
                     ADD MEDICINES
                 </Button>
 
-                <br/><br/>
+                <br /><br />
 
                 <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
@@ -165,6 +199,17 @@ function Medicines(props) {
                             </DialogActions>
                         </Form>
                     </Formik>
+                </Dialog>
+
+                <Dialog open={dOpen} onClose={handleClose}>
+                    <DialogTitle>ADD MEDICINES</DialogTitle>
+                    <DialogContent>
+                        Are You Sure?
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>No</Button>
+                        <Button onClick={handleDeletData}>Yes</Button>
+                    </DialogActions>
                 </Dialog>
             </div>
         </div>
