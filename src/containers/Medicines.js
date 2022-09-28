@@ -11,6 +11,7 @@ import { useFormik, Form, Formik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Medicines(props) {
 
@@ -18,10 +19,40 @@ function Medicines(props) {
     const [dOpen, setdOpen] = React.useState(false);
     const [data, setData] = React.useState([]);
     const [did, setDid] = React.useState([]);
+    const [update, setUpdate] = React.useState(false);
+
+    let schema = yup.object().shape({
+        name: yup.string().required("Please Enter Name."),
+        quantity: yup.string().required("Please Enter Quantity."),
+        price: yup.string().required("Please Enter Price."),
+        expiry: yup.string().required("Please Enter Expiry.")
+    });
+
+    const formikObj = useFormik({
+        initialValues: {
+            name: '',
+            quantity: '',
+            price: '',
+            expiry: ''
+        },
+        validationSchema: schema,
+        onSubmit: values => {
+            handleAdd(values)
+        },
+    });
+
+    const { handleBlur, handleChange, errors, touched, values, handleSubmit } = formikObj;
 
     const handleDelete = (data) => {
         setdOpen(true)
         setDid(data.id)
+    }
+
+    const handleEdit = (data) => {
+        setOpen(true)
+        setUpdate(true)
+        console.log(data);
+        formikObj.setValues(data)
     }
 
     const handleDeletData = () => {
@@ -47,12 +78,17 @@ function Medicines(props) {
         { field: 'expiry', headerName: 'Expiry', width: 130 },
         {
             field: '',
-            headerName: 'Expiry',
+            headerName: 'Actions',
             width: 130,
             renderCell: (params) => (
-                <IconButton aria-label="delete" onClick={() => handleDelete(params.row)}>
-                    <DeleteIcon />
-                </IconButton>
+                <>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(params.row)}>
+                        <DeleteIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => handleEdit(params.row)}>
+                        <EditIcon />
+                    </IconButton>
+                </>
             )
         }
 
@@ -71,6 +107,8 @@ function Medicines(props) {
 
     const handleClickOpen = () => {
         setOpen(true);
+        setUpdate(false);
+        formikObj.resetForm()
     };
 
     const handleClose = () => {
@@ -93,31 +131,12 @@ function Medicines(props) {
             localStorage.setItem("Medicines", JSON.stringify(localData));
         }
 
+
         setOpen(false);
         formikObj.resetForm()
     };
 
-    let schema = yup.object().shape({
-        name: yup.string().required("Please Enter Name."),
-        quantity: yup.string().required("Please Enter Quantity."),
-        price: yup.string().required("Please Enter Price."),
-        expiry: yup.string().required("Please Enter Expiry.")
-    });
-
-    const formikObj = useFormik({
-        initialValues: {
-            name: '',
-            quantity: '',
-            price: '',
-            expiry: ''
-        },
-        validationSchema: schema,
-        onSubmit: values => {
-            handleAdd(values)
-        },
-    });
-
-    const { handleBlur, handleChange, errors, touched, handleSubmit } = formikObj;
+    
 
     return (
         <div>
@@ -152,6 +171,7 @@ function Medicines(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.name}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -164,6 +184,7 @@ function Medicines(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.quantity}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -176,6 +197,7 @@ function Medicines(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.price}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -188,6 +210,7 @@ function Medicines(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.expiry}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -195,7 +218,7 @@ function Medicines(props) {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose}>Cancel</Button>
-                                <Button type='submit'>Add</Button>
+                                <Button type='submit'>{ update ? "Update" : "Add"}</Button>
                             </DialogActions>
                         </Form>
                     </Formik>

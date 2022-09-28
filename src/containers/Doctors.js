@@ -11,6 +11,7 @@ import { useFormik, Form, Formik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function Doctors(props) {
@@ -18,7 +19,8 @@ function Doctors(props) {
     const [open, setOpen] = React.useState(false);
     const [dopen, setDOpen] = React.useState(false);
     const [data, setData] = React.useState([]);
-    const [did, setDid] = React.useState(0); 
+    const [did, setDid] = React.useState(0);
+    const [update, setUpdate] = React.useState(false)
 
     React.useEffect(
         () => {
@@ -33,6 +35,8 @@ function Doctors(props) {
 
     const handleClickOpen = () => {
         setOpen(true);
+        setUpdate(false);
+        formikObj.resetForm();
     };
 
     const handleClose = () => {
@@ -80,11 +84,17 @@ function Doctors(props) {
         },
     });
 
-    const { handleBlur, handleChange, errors, touched, handleSubmit } = formikObj;
+    const { handleBlur, handleChange, errors,values, touched, handleSubmit } = formikObj;
 
     const handleDelete = (data) => {
         setDOpen(true)
         setDid(data.id)
+    }
+
+    const handleEdit = (data) => {
+        setOpen(true)
+        formikObj.setValues(data)
+        setUpdate(true)
     }
 
     const handleDeleteData = () => {
@@ -109,9 +119,14 @@ function Doctors(props) {
             headerName: 'Actions',
             width: 130,
             renderCell: (params) => (
-                <IconButton aria-label="delete" onClick={()=>handleDelete(params.row)}>
-                    <DeleteIcon />
-                </IconButton>
+                <>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(params.row)}>
+                        <DeleteIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => handleEdit(params.row)}>
+                        <EditIcon />
+                    </IconButton>
+                </>
             )
         }
 
@@ -150,6 +165,7 @@ function Doctors(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.name}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -162,6 +178,7 @@ function Doctors(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.age}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -174,6 +191,7 @@ function Doctors(props) {
                                     type="text"
                                     fullWidth
                                     variant="standard"
+                                    value={values.experience}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
@@ -181,7 +199,7 @@ function Doctors(props) {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose}>Cancel</Button>
-                                <Button type='submit'>Add</Button>
+                                <Button type='submit'>{update ? "Update" : "Add"}</Button>
                             </DialogActions>
                         </Form>
                     </Formik>
