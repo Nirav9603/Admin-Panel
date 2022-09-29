@@ -30,7 +30,11 @@ function Doctors(props) {
 
     const getData = () => {
         let localData = JSON.parse(localStorage.getItem("Doctors"))
-        setData(localData)
+
+        if(localData !== null){
+            setData(localData)
+        }
+        
     }
 
     const handleClickOpen = () => {
@@ -42,7 +46,26 @@ function Doctors(props) {
     const handleClose = () => {
         setOpen(false);
         setDOpen(false);
+        setUpdate(false);
+        formikObj.resetForm();
     };
+
+    const handleUpdate = (values) => {
+        
+        let localData = JSON.parse(localStorage.getItem("Doctors"));
+
+        let uData = localData.map((l) => {
+            if(l.id === values.id){
+                return values;
+            }else{
+                return l;
+            }
+        })
+
+        setData(uData)
+        localStorage.setItem("Doctors", JSON.stringify(uData))
+        handleClose();
+    }
 
     const handleAdd = (values) => {
 
@@ -59,8 +82,7 @@ function Doctors(props) {
             localStorage.setItem("Doctors", JSON.stringify(localData));
         }
 
-        console.log(localData);
-
+        getData()
 
         setOpen(false);
         formikObj.resetForm()
@@ -80,7 +102,11 @@ function Doctors(props) {
         },
         validationSchema: schema,
         onSubmit: values => {
-            handleAdd(values)
+            if( update ){
+                handleUpdate(values);
+            }else{
+                handleAdd(values);
+            }
         },
     });
 

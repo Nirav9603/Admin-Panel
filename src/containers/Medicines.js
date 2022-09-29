@@ -37,7 +37,12 @@ function Medicines(props) {
         },
         validationSchema: schema,
         onSubmit: values => {
-            handleAdd(values)
+            if(update){
+                handleUpdat(values)
+            }
+            else{
+                handleAdd(values)
+            }
         },
     });
 
@@ -102,7 +107,10 @@ function Medicines(props) {
 
     const getData = () => {
         let localData = JSON.parse(localStorage.getItem("Medicines"))
-        setData(localData)
+        if(localData !== null){
+            setData(localData)
+        }
+        
     }
 
     const handleClickOpen = () => {
@@ -113,8 +121,26 @@ function Medicines(props) {
 
     const handleClose = () => {
         setOpen(false);
-        setdOpen(false)
+        setdOpen(false);
+        setUpdate(false);
+        formikObj.resetForm();
     };
+
+    const handleUpdat = (values) => {
+        let localData = JSON.parse(localStorage.getItem("Medicines"));
+
+        let uData = localData.map((l) => {
+            if(l.id === values.id){
+                return values; 
+            }else{
+                return l;
+            }
+        })
+
+        setData(uData)
+        localStorage.setItem("Medicines", JSON.stringify(uData))
+        handleClose();
+    }
 
     const handleAdd = (values) => {
 
@@ -131,6 +157,7 @@ function Medicines(props) {
             localStorage.setItem("Medicines", JSON.stringify(localData));
         }
 
+        getData()
 
         setOpen(false);
         formikObj.resetForm()
