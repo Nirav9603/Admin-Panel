@@ -212,7 +212,7 @@ function Patient(props) {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose}>Cancel</Button>
-                                <Button onClick={handleAdd} type='submit' >{update ? "Update" : "Add" }</Button>
+                                <Button type='submit' >{update ? "Update" : "Add" }</Button>
                             </DialogActions>
                         </Form>
                     </Formik>
